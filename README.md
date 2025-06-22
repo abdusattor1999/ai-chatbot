@@ -32,8 +32,7 @@ Telegram бот с AI-агентом на базе FastAPI backend для обр
 ### 1. Клонирование репозитория
 
 ```bash
-git clone https://github.com/yourusername/telegram-ai-bot.git
-cd telegram-ai-bot
+git clone https://github.com/abdusattor1999/ai-chatbot
 ```
 
 ### 2. Настройка окружения
@@ -57,9 +56,9 @@ OPENAI_API_KEY=
 OPENAI_MODEL=gpt-3.5-turbo
 
 # Database
-POSTGRES_DB= 
+POSTGRES_DB=postgres
 DB_PORT=
-POSTGRES_USER=
+POSTGRES_USER=chatbot_user
 POSTGRES_PASSWORD=
 
 # Redis
@@ -78,9 +77,6 @@ REDIS_PORT=
 ```bash
 # Сборка и запуск всех сервисов
 docker-compose up --build
-
-# Запуск в фоновом режиме
-docker-compose up -d --build
 ```
 
 
@@ -117,15 +113,6 @@ docker-compose up -d --build
 | `BACKEND_URL` | URL backend сервиса | ❌ |
 | `LOG_LEVEL` | Уровень логирования | ❌ |
 
-### Кастомизация AI агента
-
-Вы можете настроить поведение AI агента, изменив системный промпт в `backend/ai_agent.py`:
-
-```python
-def _get_system_prompt(self) -> str:
-    return """Ваш кастомный системный промпт здесь..."""
-```
-
 ## 🐛 Отладка
 
 ### Общие проблемы
@@ -145,21 +132,6 @@ def _get_system_prompt(self) -> str:
    - Убедитесь, что миграции выполнены
    - Проверьте логи: `docker-compose logs postgres`
 
-### Полезные команды
-
-```bash
-# Просмотр логов всех сервисов
-docker-compose logs
-
-# Перезапуск конкретного сервиса
-docker-compose restart bot
-
-# Выполнение команды в контейнере
-docker-compose exec backend bash
-
-# Очистка всех данных
-docker-compose down -v
-```
 
 ## 📊 Мониторинг
 
