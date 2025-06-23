@@ -13,7 +13,7 @@ class Config(BaseSettings):
 
     # Backend
     BACKEND_URL: str = "http://backend:8000"
-    DATABASE_URL: str = f"postgresql://{os.getenv('POSTGRES_USER')}:{os.getenv('POSTGRES_PASSWORD')}@{os.getenv('POSTGRES_DB')}:{os.getenv('DB_PORT')}/chatbot_db"
+    DATABASE_URL: str = f"postgresql://{os.getenv('POSTGRES_USER')}:{os.getenv('POSTGRES_PASSWORD')}@{os.getenv('DB_HOST')}:{os.getenv('DB_PORT')}/chatbot_db"
 
     # Redis (для кеширования)
     REDIS_URL: str = f"redis://{os.getenv('REDIS_HOST')}:{os.getenv('REDIS_PORT', '6379')}"

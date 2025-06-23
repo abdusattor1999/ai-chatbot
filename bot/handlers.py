@@ -27,7 +27,7 @@ async def start_handler(message: Message, state: FSMContext):
 
 
 @dp.message(Command("help"))
-async def help_handler(message: Message):
+async def help_handler(message: Message, state: FSMContext):
     """Обработчик команды /help"""
     await message.answer(
         "🆘 Помощь:\n\n"
@@ -38,47 +38,7 @@ async def help_handler(message: Message):
         "• Ответами на технические вопросы\n\n"
         "Просто отправьте сообщение с вашим вопросом."
     )
-
-
-@dp.message(Command("test"))
-async def test_handler(message: Message):
-    await bot.send_chat_action(message.chat.id, "typing")
-
-    try:
-        # Отправляем запрос в backend
-        async with httpx.AsyncClient() as client:
-            response = await client.post(
-                f"{config.BACKEND_URL}/api/v1/test-chat",
-                json={
-                    "user_id": message.from_user.id,
-                    "message": message.text,
-                    "username": message.from_user.username or "Unknown"
-                },
-                timeout=30.0
-            )
-            print(444444, response.json())
-            if response.status_code == 200:
-                data = response.json()
-                ai_response = data.get("response", "Не удалось получить ответ.")
-
-                # Разбиваем длинные сообщения
-                if len(ai_response) > 4000:
-                    chunks = [ai_response[i:i + 4000] for i in range(0, len(ai_response), 4000)]
-                    for chunk in chunks:
-                        await message.answer(chunk)
-                else:
-                    await message.answer(ai_response)
-            else:
-                await message.answer("❌ Ошибка при обработке запроса.")
-
-    except httpx.TimeoutException:
-        await message.answer("⏱ Превышено время ожидания. Попробуйте еще раз.")
-    except Exception as e:
-        logger.error(f"Error processing message: {e}")
-        await message.answer("❌ Произошла ошибка. Попробуйте позже.")
-
-
-
+    await state.set_state(ConversationState.waiting_for_message)
 
 
 @dp.message(Command("clear"))
@@ -98,6 +58,8 @@ async def clear_handler(message: Message, state: FSMContext):
     except Exception as e:
         logger.error(f"Error clearing context: {e}")
         await message.answer("❌ Ошибка при очистке контекста.")
+    finally:
+        await state.set_state(ConversationState.waiting_for_message)
 
 
 @dp.message(ConversationState.waiting_for_message)
